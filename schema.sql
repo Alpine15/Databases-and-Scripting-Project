@@ -64,7 +64,7 @@ CREATE TABLE Races (
 CREATE TABLE Vendors (
     vendor_id  INTEGER PRIMARY KEY,
     name       TEXT NOT NULL UNIQUE,
-    category   TEXT NOT NULL DEFAULT 'General',  -- e.x. Food, Gear, Drinks
+    category   TEXT NOT NULL DEFAULT 'General'  -- e.x. Food, Gear, Drinks
 );
 
 CREATE TABLE RaceParticipants (
