@@ -1,324 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cycling Race Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cycling Event Database</title>
+
     <style>
-        :root { --primary: #1e3a8a; --accent: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .container { max-width: 1100px; margin: 0 auto; }
-        header { background: var(--primary); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        header h1 { margin: 0 0 5px 0; font-size: 24px; }
-        header p { margin: 0; opacity: 0.9; font-size: 14px; }
-        nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        nav button { background: #e2e8f0; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; color: #334155; }
-        nav button.active { background: var(--accent); color: white; }
-        .tab-content { display: none; background: var(--card); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .tab-content.active { display: block; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        input, select, button { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 14px; }
-        input[type="text"], input[type="number"], select { width: 100%; max-width: 400px; box-sizing: border-box; }
-        .btn-submit { background: var(--accent); color: white; border: none; cursor: pointer; font-weight: bold; padding: 10px 20px; }
-        .btn-submit:hover { opacity: 0.9; }
-        .btn-danger { background: #dc2626; color: white; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; font-size: 14px; }
-        th { background: #f1f5f9; }
-        .alert { padding: 12px; border-radius: 4px; margin-bottom: 15px; font-size: 14px; display: none; }
-        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
-        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #4ade80; }
-        .inline-form { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 15px; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 18px;
+            color: #222;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: #555;
+        }
+
+        section {
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        h2 {
+            font-size: 19px;
+            margin-top: 0;
+        }
+
+        input,
+        button {
+            font: inherit;
+            padding: 8px;
+            margin: 4px 4px 4px 0;
+        }
+
+        input {
+            max-width: 170px;
+        }
+
+        button {
+            background: #245b46;
+            color: white;
+            border: 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #184332;
+        }
+
+        #results {
+            overflow-x: auto;
+            background: #f6f8f7;
+            padding: 12px;
+            border-radius: 6px;
+            min-height: 50px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #e5ede8;
+        }
+
+        .error {
+            color: #a52323;
+        }
     </style>
 </head>
+
 <body>
+    <h1>Cycling Event Database</h1>
+    <p>Search riders, manage records, and view race information.</p>
 
-<div class="container">
-    <header>
-        <h1>🚴 Cycling Race & Team Manager</h1>
-        <p>Deliverable 5: Database Application System</p>
-    </header>
-
-    <div id="alertBox" class="alert"></div>
-
-    <nav>
-        <button class="active" onclick="switchTab('tab1', this)">1. Search Riders</button>
-        <button onclick="switchTab('tab2', this)">2. Team Roster (Join)</button>
-        <button onclick="switchTab('tab3', this)">3. Add Rider (Insert)</button>
-        <button onclick="switchTab('tab4', this)">4. Update/Delete</button>
-        <button onclick="switchTab('tab5', this)">5. Standings (Report)</button>
-        <button onclick="switchTab('tab6', this)">6. Event Vendors</button>
-        <button onclick="switchTab('tab7', this)">⚡ Transaction Demo</button>
-    </nav>
-
-    <!-- 1. SEARCH OR BROWSE -->
-    <div id="tab1" class="tab-content active">
-        <h2>1. Search & Browse Riders</h2>
-        <div class="inline-form">
-            <div>
-                <label>Name Contains:</label>
-                <input type="text" id="searchName" placeholder="e.g. Maya">
-            </div>
-            <div>
-                <label>Min Age:</label>
-                <input type="number" id="searchMinAge" placeholder="20" style="width: 100px;">
-            </div>
-            <div>
-                <label>Max Age:</label>
-                <input type="number" id="searchMaxAge" placeholder="40" style="width: 100px;">
-            </div>
-            <button class="btn-submit" onclick="searchRiders()">Search Database</button>
-        </div>
-        <div id="searchResults"></div>
-    </div>
-
-    <!-- 2. DISPLAY RELATED DATA -->
-    <div id="tab2" class="tab-content">
-        <h2>2. Detailed Team Rosters (SQL JOIN)</h2>
-        <div class="inline-form">
-            <div>
-                <label>Filter by Team:</label>
-                <select id="teamFilterSelect">
-                    <option value="">-- All Teams --</option>
-                </select>
-            </div>
-            <button class="btn-submit" onclick="loadTeamRosters()">View Roster & Race Entries</button>
-        </div>
-        <div id="rosterResults"></div>
-    </div>
-
-    <!-- 3. ADD DATA -->
-    <div id="tab3" class="tab-content">
-        <h2>3. Register New Rider (SQL INSERT)</h2>
-        <form id="addRiderForm" onsubmit="addRider(event)">
-            <div class="form-group">
-                <label>Rider Full Name *</label>
-                <input type="text" id="addName" required placeholder="Jane Doe">
-            </div>
-            <div class="form-group">
-                <label>Team *</label>
-                <select id="addTeamSelect" required></select>
-            </div>
-            <div class="form-group">
-                <label>Age</label>
-                <input type="number" id="addAge" placeholder="25" min="10" max="120">
-            </div>
-            <button type="submit" class="btn-submit">Add Rider to Database</button>
+    <!-- 1. Search Riders -->
+    <section>
+        <h2>1. Search Riders</h2>
+        <form id="searchForm">
+            <input id="searchName" placeholder="Rider name (optional)">
+            <button type="submit">Search</button>
         </form>
-    </div>
+    </section>
 
-    <!-- 4. UPDATE / DELETE -->
-    <div id="tab4" class="tab-content">
-        <h2>4. Manage Riders (SQL UPDATE & DELETE)</h2>
-        <button class="btn-submit" onclick="loadRidersForManage()" style="margin-bottom:15px;">Refresh Rider Roster</button>
-        <div id="manageRidersList"></div>
-    </div>
+    <!-- 2. View Team Riders -->
+    <section>
+        <h2>2. View Team Riders</h2>
+        <form id="teamForm">
+            <input id="teamId" type="number" min="1" required placeholder="Team ID">
+            <button type="submit">View Team</button>
+        </form>
+    </section>
 
-    <!-- 5. SUMMARY OR REPORT -->
-    <div id="tab5" class="tab-content">
-        <h2>5. Team Standings Report (VIEW + GROUP BY + Aggregates)</h2>
-        <button class="btn-submit" onclick="loadStandingsReport()">Generate Standings Report</button>
-        <div id="standingsResults"></div>
-    </div>
+    <!-- 3. Add Rider -->
+    <section>
+        <h2>3. Add Rider</h2>
+        <form id="addForm">
+            <input id="addName" required placeholder="Rider name">
+            <input id="addTeam" type="number" min="1" required placeholder="Team ID">
+            <input id="addAge" type="number" min="0" max="120" placeholder="Age (optional)">
+            <button type="submit">Add Rider</button>
+        </form>
+    </section>
 
-    <!-- 6. ADDITIONAL OPERATION -->
-    <div id="tab6" class="tab-content">
-        <h2>6. Vendor Directory by Event</h2>
-        <button class="btn-submit" onclick="loadEventVendors()">Load Event Vendor Assignments</button>
-        <div id="vendorResults"></div>
-    </div>
+    <!-- 4. Update Rider -->
+    <section>
+        <h2>4. Update Rider Age</h2>
+        <form id="updateForm">
+            <input id="updateId" type="number" min="1" required placeholder="Rider ID">
+            <input id="updateAge" type="number" min="0" max="120" required placeholder="New age">
+            <button type="submit">Update Age</button>
+        </form>
+    </section>
 
-    <!-- 7. TRANSACTION DEMO -->
-    <div id="tab7" class="tab-content">
-        <h2>Multi-Step Database Transaction Demo</h2>
-        <p>This action executes a multi-statement transaction updating <code>RaceParticipants</code> finish positions and setting the <code>Races.winner_id</code> automatically within a single transaction.</p>
-        <button class="btn-submit" onclick="runTransactionDemo()">Execute Race 9 Winner Transaction</button>
-        <div id="txResults" style="margin-top:15px;"></div>
-    </div>
-</div>
+    <!-- 5. Team Summary -->
+    <section>
+        <h2>5. Team Summary</h2>
+        <button id="summaryButton" type="button">
+            Show Riders per Team
+        </button>
+    </section>
 
-<script>
-    function showAlert(msg, isError = false) {
-        const box = document.getElementById('alertBox');
-        box.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
-        box.innerText = msg;
-        box.style.display = 'block';
-        setTimeout(() => { box.style.display = 'none'; }, 5000);
-    }
+    <!-- 6. Race Results -->
+    <section>
+        <h2>6. Race Results</h2>
+        <form id="raceForm">
+            <input id="raceId" type="number" min="1" required placeholder="Race ID">
+            <button type="submit">Show Results</button>
+        </form>
+    </section>
 
-    function switchTab(tabId, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
-    }
+    <!-- 7. All Events -->
+    <section>
+        <h2>7. View All Events</h2>
+        <button id="eventsButton" type="button">
+            Show All Events
+        </button>
+    </section>
 
-    async function loadDropdowns() {
-        try {
-            const res = await fetch('/api/lookup-data');
-            const data = await res.json();
-            if(data.success) {
-                const teamSelects = [document.getElementById('teamFilterSelect'), document.getElementById('addTeamSelect')];
-                teamSelects.forEach(select => {
-                    select.innerHTML = select.id.includes('Filter') ? '<option value="">-- All Teams --</option>' : '<option value="">-- Select Team --</option>';
-                    data.teams.forEach(t => {
-                        select.innerHTML += `<option value="${t.team_id}">${t.name}</option>`;
-                    });
-                });
+    <!-- 8. Event Vendors -->
+    <section>
+        <h2>8. Event Vendors</h2>
+        <form id="vendorsForm">
+            <input id="vendorsEventId" type="number" min="1" required placeholder="Event ID">
+            <button type="submit">Show Vendors</button>
+        </form>
+    </section>
+
+    <!-- 9. Event Teams -->
+    <section>
+        <h2>9. Event Teams</h2>
+        <form id="eventTeamsForm">
+            <input id="teamsEventId" type="number" min="1" required placeholder="Event ID">
+            <button type="submit">Show Teams</button>
+        </form>
+    </section>
+
+    <h2>Results</h2>
+    <div id="results">Choose an operation above.</div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        // Display results as a table or message
+        function showResults(data) {
+            results.replaceChildren();
+
+            if (!Array.isArray(data)) {
+                const message = document.createElement('p');
+                message.textContent =
+                    data.message || data.error || 'Operation completed.';
+
+                if (data.error) message.className = 'error';
+                results.appendChild(message);
+
+                if (data.rider_id) {
+                    const id = document.createElement('p');
+                    id.textContent = 'New rider ID: ' + data.rider_id;
+                    results.appendChild(id);
+                }
+                return;
             }
-        } catch(e) { console.error('Failed to load dropdown data', e); }
-    }
 
-    // 1. Search
-    async function searchRiders() {
-        const name = document.getElementById('searchName').value;
-        const minAge = document.getElementById('searchMinAge').value;
-        const maxAge = document.getElementById('searchMaxAge').value;
-        const res = await fetch(`/api/riders/search?name=${encodeURIComponent(name)}&minAge=${minAge}&maxAge=${maxAge}`);
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
+            if (data.length === 0) {
+                results.textContent = 'No records found.';
+                return;
+            }
 
-        let html = `<p>Found ${result.count} matching rider(s).</p><table><tr><th>ID</th><th>Name</th><th>Age</th><th>Team</th></tr>`;
-        result.data.forEach(r => {
-            html += `<tr><td>${r.rider_id}</td><td>${r.rider_name}</td><td>${r.age || 'N/A'}</td><td>${r.team_name}</td></tr>`;
+            const table = document.createElement('table');
+            const header = document.createElement('tr');
+
+            Object.keys(data[0]).forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key.replaceAll('_', ' ');
+                header.appendChild(th);
+            });
+
+            table.appendChild(header);
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+
+                Object.values(row).forEach(value => {
+                    const td = document.createElement('td');
+                    td.textContent = value == null ? '—' : String(value);
+                    tr.appendChild(td);
+                });
+
+                table.appendChild(tr);
+            });
+
+            results.appendChild(table);
+        }
+
+        // Send requests to the server
+        async function request(url, options) {
+            results.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Request failed');
+                }
+
+                showResults(data);
+            } catch (err) {
+                showResults({ error: err.message });
+            }
+        }
+
+        // Search riders
+        document.getElementById('searchForm').addEventListener('submit', event => {
+            event.preventDefault();
+
+            const name = document.getElementById('searchName').value;
+            request('/riders?name=' + encodeURIComponent(name));
         });
-        html += '</table>';
-        document.getElementById('searchResults').innerHTML = html;
-    }
 
-    // 2. Related Data
-    async function loadTeamRosters() {
-        const teamId = document.getElementById('teamFilterSelect').value;
-        const res = await fetch(`/api/teams/roster-details?teamId=${teamId}`);
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
+        // View team riders
+        document.getElementById('teamForm').addEventListener('submit', event => {
+            event.preventDefault();
 
-        let html = `<table><tr><th>Team Name</th><th>Home City</th><th>Coach</th><th>Rider Name</th><th>Age</th><th>Races Entered</th></tr>`;
-        result.data.forEach(r => {
-            html += `<tr><td>${r.team_name}</td><td>${r.home_city}</td><td>${r.coach_name || 'None'}</td><td>${r.rider_name}</td><td>${r.age || 'N/A'}</td><td>${r.total_races_entered}</td></tr>`;
+            const id = document.getElementById('teamId').value;
+            request('/teams/' + id + '/riders');
         });
-        html += '</table>';
-        document.getElementById('rosterResults').innerHTML = html;
-    }
 
-    // 3. Add Rider
-    async function addRider(e) {
-        e.preventDefault();
-        const payload = {
-            name: document.getElementById('addName').value,
-            team_id: document.getElementById('addTeamSelect').value,
-            age: document.getElementById('addAge').value
-        };
-        const res = await fetch('/api/riders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        // Add rider
+        document.getElementById('addForm').addEventListener('submit', event => {
+            event.preventDefault();
+
+            const age = document.getElementById('addAge').value;
+
+            request('/riders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('addName').value,
+                    team_id: Number(document.getElementById('addTeam').value),
+                    age: age === '' ? null : Number(age)
+                })
+            });
         });
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
-        showAlert(result.message);
-        document.getElementById('addRiderForm').reset();
-    }
 
-    // 4. Update / Delete
-    async function loadRidersForManage() {
-        const res = await fetch('/api/riders/search?name=');
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
+        // Update rider age
+        document.getElementById('updateForm').addEventListener('submit', event => {
+            event.preventDefault();
 
-        let html = `<table><tr><th>ID</th><th>Name</th><th>Age</th><th>Actions</th></tr>`;
-        result.data.forEach(r => {
-            html += `<tr>
-                <td>${r.rider_id}</td>
-                <td><input type="text" id="edit-name-${r.rider_id}" value="${r.rider_name}"></td>
-                <td><input type="number" id="edit-age-${r.rider_id}" value="${r.age || ''}" style="width:70px;"></td>
-                <td>
-                    <button onclick="updateRider(${r.rider_id})">Save UPDATE</button>
-                    <button class="btn-danger" onclick="deleteRider(${r.rider_id})">DELETE</button>
-                </td>
-            </tr>`;
+            const id = document.getElementById('updateId').value;
+            const age = document.getElementById('updateAge').value;
+
+            request('/riders/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ age: Number(age) })
+            });
         });
-        html += '</table>';
-        document.getElementById('manageRidersList').innerHTML = html;
-    }
 
-    async function updateRider(id) {
-        const name = document.getElementById(`edit-name-${id}`).value;
-        const age = document.getElementById(`edit-age-${id}`).value;
-        const res = await fetch(`/api/riders/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, age })
+        // Team summary
+        document.getElementById('summaryButton').addEventListener('click', () => {
+            request('/reports/teams');
         });
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
-        showAlert(result.message);
-        loadRidersForManage();
-    }
 
-    async function deleteRider(id) {
-        if(!confirm(`Are you sure you want to delete rider ID ${id}?`)) return;
-        const res = await fetch(`/api/riders/${id}`, { method: 'DELETE' });
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
-        showAlert(result.message);
-        loadRidersForManage();
-    }
+        // Race results
+        document.getElementById('raceForm').addEventListener('submit', event => {
+            event.preventDefault();
 
-    // 5. Standings
-    async function loadStandingsReport() {
-        const res = await fetch('/api/reports/team-standings');
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
-
-        let html = `<h3>${result.report_name}</h3><table><tr><th>Team</th><th>Total Race Entries</th><th>1st Places</th><th>2nd Places</th><th>3rd Places</th><th>Avg Finish Pos</th></tr>`;
-        result.data.forEach(r => {
-            html += `<tr><td>${r.team_name}</td><td>${r.total_entries}</td><td>${r.first_places}</td><td>${r.second_places}</td><td>${r.third_places}</td><td>${r.avg_finish_position}</td></tr>`;
+            const id = document.getElementById('raceId').value;
+            request('/races/' + id + '/results');
         });
-        html += '</table>';
-        document.getElementById('standingsResults').innerHTML = html;
-    }
 
-    // 6. Vendors
-    async function loadEventVendors() {
-        const res = await fetch('/api/reports/event-vendors');
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
-
-        let html = `<table><tr><th>Event</th><th>Date</th><th>Vendor Name</th><th>Category</th><th>Booth #</th></tr>`;
-        result.data.forEach(r => {
-            html += `<tr><td>${r.event_name}</td><td>${r.event_date}</td><td>${r.vendor_name}</td><td>${r.category}</td><td>${r.booth || 'N/A'}</td></tr>`;
+        // Show all events
+        document.getElementById('eventsButton').addEventListener('click', () => {
+            request('/events');
         });
-        html += '</table>';
-        document.getElementById('vendorResults').innerHTML = html;
-    }
 
-    // 7. Transaction
-    async function runTransactionDemo() {
-        const payload = {
-            race_id: 9,
-            finishes: [
-                { rider_id: 9, finish_position: 1 },
-                { rider_id: 2, finish_position: 2 },
-                { rider_id: 11, finish_position: 3 },
-                { rider_id: 4, finish_position: 4 }
-            ]
-        };
-        const res = await fetch('/api/races/record-results-transaction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        // Show vendors at an event
+        document.getElementById('vendorsForm').addEventListener('submit', event => {
+            event.preventDefault();
+
+            const id = document.getElementById('vendorsEventId').value;
+            request('/events/' + id + '/vendors');
         });
-        const result = await res.json();
-        if(!result.success) return showAlert(result.error, true);
-        showAlert(result.message);
-        document.getElementById('txResults').innerHTML = `<div class="alert alert-success" style="display:block;">${result.message}</div>`;
-    }
 
-    // Initialize
-    loadDropdowns();
-    searchRiders();
-</script>
+        // Show teams at an event
+        document.getElementById('eventTeamsForm').addEventListener('submit', event => {
+            event.preventDefault();
+
+            const id = document.getElementById('teamsEventId').value;
+            request('/events/' + id + '/teams');
+        });
+    </script>
 </body>
+
 </html>

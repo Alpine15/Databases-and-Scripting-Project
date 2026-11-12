@@ -1,14 +1,6 @@
 {
-  "name": "cycling-race-manager",
-  "version": "1.0.0",
-  "description": "Cycling Race & Team Management Application for Deliverable 5",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "init-db": "node -e \"const fs=require('fs'),sqlite3=require('sqlite3').verbose(),db=new sqlite3.Database('cycling.db');db.exec(fs.readFileSync('schema.sql','utf8') + '\\n' + fs.readFileSync('insert_data.sql','utf8'), err => { if(err) console.error(err); else console.log('Database initialized successfully.'); db.close(); });\""
-  },
   "dependencies": {
-    "express": "^4.19.2",
-    "sqlite3": "^5.1.7"
+    "express": "^5.3.0",
+    "sqlite3": "^6.0.1"
   }
 }
