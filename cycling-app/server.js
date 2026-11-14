@@ -8,7 +8,9 @@ const app = express();
 const db = new sqlite3.Database('cycling.db');
 
 app.use(express.json());
-app.use(express.static('public'));
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
 
 db.run('PRAGMA foreign_keys = ON');
 
