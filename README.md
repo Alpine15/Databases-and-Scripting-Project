@@ -43,3 +43,7 @@
 1. This is only a local demonstration of the app and doesn't provide user accounts.
 1. The frontend doesn't provide every possible operation that is possible with the database.
 1. The applications uses a local db file instead of a hosted batabase.
+
+# ER Design
+
+![Screenshot](ER-design.pdf)
